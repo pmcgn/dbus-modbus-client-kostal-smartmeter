@@ -24,6 +24,11 @@ This readme assumes, that you are familiar with basic file operations and SSH us
 
 Open the GX Webinterface and navigate to Settings -> Modbus TCP Devices and trigger a Scan. It should now be able to find the KSEM. If the automatic detection does not work, go to Devices and press Add, to add the KSEM IP manually.
 
+## Known Limitations
+
+ 1. Serial number not shown in victron. This is an Issue of the KSEM, as it does not provide a correct value for the serial number.
+ 2. Power precision is 10W. This is a limitation of the used SunSpec register. There are internal registers which provide higher precision, but they don't propagate positive and negative values on the same register.
+
 ## Troubleshooting
 
  - Check that the file Kostal_SmartEnergyMeter.py exists and that it is placed into the correct dorectory
