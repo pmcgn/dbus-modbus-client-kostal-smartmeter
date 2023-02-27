@@ -92,9 +92,15 @@ models = {
         'model':    'KOSTAL_KSEM',
         'handler':  Kostal_SmartEnergyMeter,
     },
+    18514: {
+        'model':    'KOSTAL_KSEM',
+        'handler':  Kostal_SmartEnergyMeter,
+    },
 }
 
 
-probe.add_handler(probe.ModelRegister(0x2001, models,
-                                      methods=['tcp'],
-                                      units=[1]))
+#VenusOS < 2.92
+#probe.add_handler(probe.ModelRegister(0x2001, models, methods=['tcp'], units=[1]))
+
+#VenusOS >= 2.92
+probe.add_handler(probe.ModelRegister(Reg_u16(0x2001), models, methods=['tcp'], units=[1]))
