@@ -1,18 +1,5 @@
 # VenusOS module for support of KOSTAL Smart Energy Meter
-# 
 # Community contribution by Philipp Mahler
-# 
-# Changelog
-# ----------------------
-# 
-# Version 1.0
-#  - Initial Release
-#
-# Thanks to Victron for their open platform!
-
-# TODO:
-# - AC Current auf SunSpec register wegen flußrichtung umstellen
-# - L3 U und P passen nicht zusammen
 
 import logging
 import device
