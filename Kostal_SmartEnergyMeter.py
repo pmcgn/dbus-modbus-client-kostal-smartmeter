@@ -1,18 +1,5 @@
 # VenusOS module for support of KOSTAL Smart Energy Meter
-# 
 # Community contribution by Philipp Mahler
-# 
-# Changelog
-# ----------------------
-# 
-# Version 1.0
-#  - Initial Release
-#
-# Thanks to Victron for their open platform!
-
-# TODO:
-# - AC Current auf SunSpec register wegen flußrichtung umstellen
-# - L3 U und P passen nicht zusammen
 
 import logging
 import device
@@ -88,6 +75,10 @@ class Kostal_SmartEnergyMeter(device.EnergyMeter):
 
 
 models = {
+    18498: {
+        'model':    'KOSTAL_KSEM',
+        'handler':  Kostal_SmartEnergyMeter,
+    },
     18514: {
         'model':    'KOSTAL_KSEM',
         'handler':  Kostal_SmartEnergyMeter,
@@ -95,6 +86,10 @@ models = {
 }
 
 
-probe.add_handler(probe.ModelRegister(Reg_u16(0x2001), models,
-                                      methods=['tcp'],
-                                      units=[1]))
+
+#VenusOS < 2.92
+#probe.add_handler(probe.ModelRegister(0x2001, models, methods=['tcp'], units=[1]))
+
+#VenusOS >= 2.92
+probe.add_handler(probe.ModelRegister(Reg_u16(0x2001), models, methods=['tcp'], units=[1]))
+
