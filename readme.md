@@ -18,7 +18,8 @@ This readme assumes, that you are familiar with basic file operations and SSH us
  4. Open the file dbus-modbus-client.py in a text editor: `vi dbus-modbus-client.py`
  5. Add the instruction `import Kostal_SmartEnergyMeter` behind the other imports (before typing, press `i` to switch to input mode
  6. Save and exit vi: Press `ESC` then type `:wq` and press `Enter`
- 7. Restart the GX device via `reboot`
+ 7. Delete python cache: `rm /opt/victronenergy/dbus-modbus-client/__pycache__/dbus-modbus-client.cpython-38.pyc`
+ 8. Restart the GX device via `reboot`
 
 ## Usage
 
@@ -36,3 +37,4 @@ Open the GX Webinterface and navigate to Settings -> Modbus TCP Devices and trig
  - Check if the KSEM IP is reachable from the local network
  - Check if the Modbus TCP Service is running on the KSEM (either by checking the configuration or using Modbus TCP test tools).
  - Ensure that the IP of the KSEM does not change after adding it to the GX device. Otherwise the communication will fail after a while.
+ - Check logfile `/var/log/dbus-modbus-client/current` on VenusOS device. Expecttation is to see a line containing `Found KOSTAL_KSEM at tcp:<ksem-ip>:502:1`
