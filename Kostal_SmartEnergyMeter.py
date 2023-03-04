@@ -88,13 +88,13 @@ class Kostal_SmartEnergyMeter(device.EnergyMeter):
 
 
 models = {
-    18498: {
+    18514: {
         'model':    'KOSTAL_KSEM',
         'handler':  Kostal_SmartEnergyMeter,
     },
 }
 
 
-probe.add_handler(probe.ModelRegister(0x2001, models,
+probe.add_handler(probe.ModelRegister(Reg_u16(0x2001), models,
                                       methods=['tcp'],
                                       units=[1]))
