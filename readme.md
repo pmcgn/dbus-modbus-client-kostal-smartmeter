@@ -37,4 +37,14 @@ Open the GX Webinterface and navigate to Settings -> Modbus TCP Devices and trig
  - Check if the KSEM IP is reachable from the local network
  - Check if the Modbus TCP Service is running on the KSEM (either by checking the configuration or using Modbus TCP test tools).
  - Ensure that the IP of the KSEM does not change after adding it to the GX device. Otherwise the communication will fail after a while.
- - Check logfile `/var/log/dbus-modbus-client/current` on VenusOS device. Expecttation is to see a line containing `Found KOSTAL_KSEM at tcp:<ksem-ip>:502:1`
+ - Check logfile `/var/log/dbus-modbus-client/current` on VenusOS device. Expectation is to see a line containing `Found KOSTAL_KSEM at tcp:<ksem-ip>:502:1`
+ - It seems that KOSTAL is changing the identifier of the KSEM with some updates. This identifier is used by Victron to ensure that the target device is really a Kostal Smart Energy Meter. To check if you are affected by the change, please execute the following steps:
+   - Install python on your computer via https://www.python.org/downloads/ (Sorry, currently the next script does not run directly on VenusOS, Pull requests are welcome)
+   - Download the helper script `https://raw.githubusercontent.com/pmcgn/dbus-modbus-client-kostal-smartmeter/main/helpers/read_modbus_tcp_register.py` to your windows machine
+   - Execute it with `python <path-to-script>\read_modbus_tcp_register.py`
+   - The script will ask for the KSEM IP Address, enter it and hit enter
+   - If everything is ok, the script will tell you the Identifier of your KSEM (`KSEM Device ID (Decimal):  18498`)
+   - Open the file Kostal_SmartEnergyMeter.py on the KSEM (Downloaded during installation), and make sure that the identifier from the previous step is listed at the end. For Example: `models = { 18498: ...`
+   - If your identifier does not appear here, change the default of 18498 to the value from the helper script
+   - Reboot the VenusOS device after changing the identifier
+   - If it works, please let me know your identifier. The easiest way is to create a github issue (mention your value!).
