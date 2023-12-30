@@ -83,6 +83,10 @@ models = {
         'model':    'KOSTAL_KSEM',
         'handler':  Kostal_SmartEnergyMeter,
     },
+    18530: {
+        'model':    'KOSTAL_KSEM',
+        'handler':  Kostal_SmartEnergyMeter,
+    },
 }
 
 
