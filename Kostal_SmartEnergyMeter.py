@@ -26,31 +26,47 @@ class Kostal_SmartEnergyMeter(device.EnergyMeter):
         self.read_info()
 
         regs = [
-            Reg_s16(0x9C98,  '/Ac/Power',             10,   '%.0f W'),     # Using SunSpec register with lower resolution (10W instead of 0.1W)
             Reg_u32b(0x001A, '/Ac/Frequency',         1000,  '%.1f Hz'),
             Reg_u64b(0x0200, '/Ac/Energy/Forward',    10000, '%.1f kWh'),
             Reg_u64b(0x0204, '/Ac/Energy/Reverse',    10000, '%.1f kWh'),
             
             Reg_u32b(0x003E, '/Ac/L1/Voltage',        1000,  '%.1f V'),
-            # Reg_u32b(0x003C, '/Ac/L1/Current',        1000,  '%.3f A'),   # KSEM internal register. Higher Resolution but pos/neg on different registers
-            Reg_s16(0x9C89,  '/Ac/L1/Current',        100,   '%.2f A'),     # Using SunSpec register with lower resolution
-            Reg_s16(0x9C99,  '/Ac/L1/Power',          10,   '%.0f W'),     # Using SunSpec register with lower resolution
+            Reg_u32b(0x003C, '/Ac/L1/Current',        1000,  '%.3f A'),
             Reg_u64b(0x0250, '/Ac/L1/Energy/Forward', 10000, '%.1f kWh'),
             Reg_u64b(0x0254, '/Ac/L1/Energy/Reverse', 10000, '%.1f kWh'),
 
             Reg_u32b(0x0066, '/Ac/L2/Voltage',        1000,  '%.1f V'),
-            # Reg_u32b(0x0064, '/Ac/L2/Current',        1000,  '%.3f A'),   # KSEM internal register. Higher Resolution but pos/neg on different registers
-            Reg_s16(0x9C8A,  '/Ac/L2/Current',        100,   '%.2f A'),     # Using SunSpec register with lower resolution
-            Reg_s16(0x9C9A,  '/Ac/L2/Power',          10,   '%.0f W'),     # Using SunSpec register with lower resolution
+            Reg_u32b(0x0064, '/Ac/L2/Current',        1000,  '%.3f A'),
             Reg_u64b(0x02A0, '/Ac/L2/Energy/Forward', 10000, '%.1f kWh'),
             Reg_u64b(0x02A4, '/Ac/L2/Energy/Reverse', 10000, '%.1f kWh'),
 
             Reg_u32b(0x008E, '/Ac/L3/Voltage',        1000,  '%.1f V'),
-            # Reg_u32b(0x008C, '/Ac/L3/Current',        1000,  '%.3f A'),   # KSEM internal register. Higher Resolution but pos/neg on different registers
-            Reg_s16(0x9C8B,  '/Ac/L3/Current',        100,   '%.2f A'),     # Using SunSpec register with lower resolution
-            Reg_s16(0x9C9B,  '/Ac/L3/Power',          10,   '%.0f W'),     # Using SunSpec register with lower resolution
+            Reg_u32b(0x008C, '/Ac/L3/Current',        1000,  '%.3f A'),
             Reg_u64b(0x02F0, '/Ac/L3/Energy/Forward', 10000, '%.1f kWh'),
             Reg_u64b(0x02F4, '/Ac/L3/Energy/Reverse', 10000, '%.1f kWh'),
+
+            # Power data from KSEM internal registers, different ones for pos/neg values
+
+            Reg_u32b(0x0000,  '/Ac/Power',            10,   '%.0f W'),    # positive value register total power
+            Reg_u32b(0x0002,  '/Ac/Power',            -10,   '%.0f W'),   # negative value register total power
+            Reg_u32b(0x0038, '/Ac/L1/Power',          10,    '%.0f W'),   # positive value register L1 power
+            Reg_u32b(0x003A, '/Ac/L1/Power',          -10,    '%.0f W'),  # negative value register L1 power
+            Reg_u32b(0x0050, '/Ac/L2/Power',          10,    '%.0f W'),   # positive value register L2 power
+            Reg_u32b(0x0052, '/Ac/L2/Power',          -10,    '%.0f W'),  # negative value register L2 power
+            Reg_u32b(0x0078, '/Ac/L3/Power',          10,    '%.0f W'),   # positive value register L3 power
+            Reg_u32b(0x007A, '/Ac/L3/Power',          -10,    '%.0f W'),  # negative value register L3 power
+
+            # Power data from SunSpec registers alternatively
+            #
+            # Drawbacks:
+            # - lower resolution (10W instead of 0.1W)
+            # - requires consideration of power scale factor (e.g. -1 to shift decimal point one to the left, see SunSpec specification section 4.2.8)
+
+            # Reg_u16(0x9C9C, '/Ac/PowerFactor'),
+            # Reg_s16(0x9C98, '/Ac/Power',    1, '%.0f W'),
+            # Reg_s16(0x9C99, '/Ac/L1/Power', 1, '%.0f W'),
+            # Reg_s16(0x9C9A, '/Ac/L2/Power', 1, '%.0f W'),
+            # Reg_s16(0x9C9B, '/Ac/L3/Power', 1, '%.0f W'),
         ]
         
         self.data_regs = regs
