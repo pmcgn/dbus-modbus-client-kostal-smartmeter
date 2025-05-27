@@ -47,14 +47,14 @@ class Kostal_SmartEnergyMeter(device.EnergyMeter):
 
             # Power data from KSEM internal registers, different ones for pos/neg values
 
-            Reg_u32b(0x0000,  '/Ac/Power',            10,   '%.0f W'),    # positive value register total power
-            Reg_u32b(0x0002,  '/Ac/Power',            -10,   '%.0f W'),   # negative value register total power
-            Reg_u32b(0x0038, '/Ac/L1/Power',          10,    '%.0f W'),   # positive value register L1 power
-            Reg_u32b(0x003A, '/Ac/L1/Power',          -10,    '%.0f W'),  # negative value register L1 power
-            Reg_u32b(0x0050, '/Ac/L2/Power',          10,    '%.0f W'),   # positive value register L2 power
-            Reg_u32b(0x0052, '/Ac/L2/Power',          -10,    '%.0f W'),  # negative value register L2 power
-            Reg_u32b(0x0078, '/Ac/L3/Power',          10,    '%.0f W'),   # positive value register L3 power
-            Reg_u32b(0x007A, '/Ac/L3/Power',          -10,    '%.0f W'),  # negative value register L3 power
+            Reg_u32b(0x0000, '/Ac/Power',             10,    '%.1f W'),  # positive value register total power
+            Reg_u32b(0x0002, '/Ac/Power',             -10,   '%.1f W'),  # negative value register total power
+            Reg_u32b(0x0038, '/Ac/L1/Power',          10,    '%.1f W'),  # positive value register L1 power
+            Reg_u32b(0x003A, '/Ac/L1/Power',          -10,   '%.1f W'),  # negative value register L1 power
+            Reg_u32b(0x0050, '/Ac/L2/Power',          10,    '%.1f W'),  # positive value register L2 power
+            Reg_u32b(0x0052, '/Ac/L2/Power',          -10,   '%.1f W'),  # negative value register L2 power
+            Reg_u32b(0x0078, '/Ac/L3/Power',          10,    '%.1f W'),  # positive value register L3 power
+            Reg_u32b(0x007A, '/Ac/L3/Power',          -10,   '%.1f W'),  # negative value register L3 power
 
             # Power data from SunSpec registers alternatively
             #
