@@ -19,9 +19,8 @@ class Kostal_SmartEnergyMeter(device.EnergyMeter):
         self.info_regs = [
             Reg_u16(0x2002, '/HardwareVersion'),
             Reg_u16(0x2003, '/FirmwareVersion'),
-            Reg_u16(0x2033, '/Serial'), # not populated correctly by KSEM, therefore reading it as uInt instad of String
+            Reg_text(0x2024, 4, '/Serial'),
         ]
-
 
     def device_init(self):
         self.read_info()
