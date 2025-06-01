@@ -8,14 +8,6 @@ from register import *
 
 log = logging.getLogger()
 
-#nr_phases = [ 1, 3, 3 ]
-
-#phase_configs = [
-#    '1P',
-#    '3P.n',
-#    '3P',
-#]
-
 class Kostal_SmartEnergyMeter(device.EnergyMeter):
     productid = 0x00
     productname = 'KOSTAL Smart Energy Meter'
@@ -27,39 +19,54 @@ class Kostal_SmartEnergyMeter(device.EnergyMeter):
         self.info_regs = [
             Reg_u16(0x2002, '/HardwareVersion'),
             Reg_u16(0x2003, '/FirmwareVersion'),
-            Reg_u16(0x2033, '/Serial'), # not populated correctly by KSEM, therefore reading it as uInt instad of String
+            Reg_text(0x2024, 4, '/Serial'),
         ]
-
 
     def device_init(self):
         self.read_info()
 
         regs = [
-            Reg_s16(0x9C97,  '/Ac/Power',             0.1,   '%.0f W'),     # Using SunSpec register with lower resolution (10W instead of 0.1W)
             Reg_u32b(0x001A, '/Ac/Frequency',         1000,  '%.1f Hz'),
             Reg_u64b(0x0200, '/Ac/Energy/Forward',    10000, '%.1f kWh'),
             Reg_u64b(0x0204, '/Ac/Energy/Reverse',    10000, '%.1f kWh'),
             
             Reg_u32b(0x003E, '/Ac/L1/Voltage',        1000,  '%.1f V'),
-            # Reg_u32b(0x003C, '/Ac/L1/Current',        1000,  '%.3f A'),   # KSEM internal register. Higher Resolution but pos/neg on different registers
-            Reg_s16(0x9C88,  '/Ac/L1/Current',        100,   '%.2f A'),     # Using SunSpec register with lower resolution
-            Reg_s16(0x9C98,  '/Ac/L1/Power',          0.1,   '%.0f W'),     # Using SunSpec register with lower resolution
+            Reg_u32b(0x003C, '/Ac/L1/Current',        1000,  '%.3f A'),
             Reg_u64b(0x0250, '/Ac/L1/Energy/Forward', 10000, '%.1f kWh'),
             Reg_u64b(0x0254, '/Ac/L1/Energy/Reverse', 10000, '%.1f kWh'),
 
             Reg_u32b(0x0066, '/Ac/L2/Voltage',        1000,  '%.1f V'),
-            # Reg_u32b(0x0064, '/Ac/L2/Current',        1000,  '%.3f A'),   # KSEM internal register. Higher Resolution but pos/neg on different registers
-            Reg_s16(0x9C89,  '/Ac/L2/Current',        100,   '%.2f A'),     # Using SunSpec register with lower resolution
-            Reg_s16(0x9C99,  '/Ac/L2/Power',          0.1,   '%.0f W'),     # Using SunSpec register with lower resolution
+            Reg_u32b(0x0064, '/Ac/L2/Current',        1000,  '%.3f A'),
             Reg_u64b(0x02A0, '/Ac/L2/Energy/Forward', 10000, '%.1f kWh'),
             Reg_u64b(0x02A4, '/Ac/L2/Energy/Reverse', 10000, '%.1f kWh'),
 
             Reg_u32b(0x008E, '/Ac/L3/Voltage',        1000,  '%.1f V'),
-            # Reg_u32b(0x008C, '/Ac/L3/Current',        1000,  '%.3f A'),   # KSEM internal register. Higher Resolution but pos/neg on different registers
-            Reg_s16(0x9C8A,  '/Ac/L3/Current',        100,   '%.2f A'),     # Using SunSpec register with lower resolution
-            Reg_s16(0x9C9A,  '/Ac/L3/Power',          0.1,   '%.0f W'),     # Using SunSpec register with lower resolution
+            Reg_u32b(0x008C, '/Ac/L3/Current',        1000,  '%.3f A'),
             Reg_u64b(0x02F0, '/Ac/L3/Energy/Forward', 10000, '%.1f kWh'),
             Reg_u64b(0x02F4, '/Ac/L3/Energy/Reverse', 10000, '%.1f kWh'),
+
+            # Power data from KSEM internal registers, different ones for pos/neg values
+
+            Reg_u32b(0x0000, '/Ac/Power',             10,    '%.1f W'),  # positive value register total power
+            Reg_u32b(0x0002, '/Ac/Power',             -10,   '%.1f W'),  # negative value register total power
+            Reg_u32b(0x0028, '/Ac/L1/Power',          10,    '%.1f W'),  # positive value register L1 power
+            Reg_u32b(0x002A, '/Ac/L1/Power',          -10,   '%.1f W'),  # negative value register L1 power
+            Reg_u32b(0x0050, '/Ac/L2/Power',          10,    '%.1f W'),  # positive value register L2 power
+            Reg_u32b(0x0052, '/Ac/L2/Power',          -10,   '%.1f W'),  # negative value register L2 power
+            Reg_u32b(0x0078, '/Ac/L3/Power',          10,    '%.1f W'),  # positive value register L3 power
+            Reg_u32b(0x007A, '/Ac/L3/Power',          -10,   '%.1f W'),  # negative value register L3 power
+
+            # Power data from SunSpec registers alternatively
+            #
+            # Drawbacks:
+            # - lower resolution (10W instead of 0.1W)
+            # - requires consideration of power scale factor (e.g. -1 to shift decimal point one to the left, see SunSpec specification section 4.2.8)
+
+            # Reg_u16(0x9C9C, '/Ac/PowerFactor'),
+            # Reg_s16(0x9C98, '/Ac/Power',    1, '%.0f W'),
+            # Reg_s16(0x9C99, '/Ac/L1/Power', 1, '%.0f W'),
+            # Reg_s16(0x9C9A, '/Ac/L2/Power', 1, '%.0f W'),
+            # Reg_s16(0x9C9B, '/Ac/L3/Power', 1, '%.0f W'),
         ]
         
         self.data_regs = regs
